@@ -1,11 +1,10 @@
 export default (router, context) => {
-	let temp = "test";
 	router.get('/*', async (req, res) => {
-		let temp = await test(req);
-		res.send(temp);
+		let finalApiResponse = await useTool(req);
+		res.send(finalApiResponse);
 	});
 
-	async function test(req) {
+	async function useTool(req) {
 		const urlRequestsBreakdown = req.url.split(/\/|\?/);
 		let requestedTool = urlRequestsBreakdown[1];
 		let requestedToolQuery = req.query;
