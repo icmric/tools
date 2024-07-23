@@ -158,8 +158,7 @@ var index = (router, context) => {
 	router.get('/*', async (req, res) => {
 		reqExport = req;
 		contextExport = context;
-		//let test = new useTool;
-		let finalApiResponse = await useTool(reqExport, contextExport);
+		let finalApiResponse = await useTool(req, context);
 		res.send(finalApiResponse);
 	});
 };
