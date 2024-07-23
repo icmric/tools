@@ -43,10 +43,9 @@ export default (router, context) => {
 
 		context.data = {};
 		context.data.reqAccountability = req.accountability;
-		context.data.$url = requestedToolQuery; //context.data.$trigger.data.query;
+		context.data.$url = requestedToolQuery;
 		context.data.$tool = {};
 		context.data.$tool.main = recursiveReplace(tool.main);
-		//return reqw
 
 
 		let apiData = {
