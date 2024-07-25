@@ -22,16 +22,6 @@ async function useTool(req, context) {
         return itemx.readByQuery({ fields: ['title'] });
     }
 
-    // Gets extra values from parent if present
-    let extraValues = {};
-    if (datax[0].extra_values != null) {
-        for (let i = 0; i < datax[0].extra_values.length; i++) {
-            let key = datax[0].extra_values[i].key;
-            let value = datax[0].extra_values[i].value;
-            extraValues[key] = value;
-        }
-    }
-
     let apiRequest = datax[0].api;
     let tool = datax[0];
 
@@ -41,6 +31,16 @@ async function useTool(req, context) {
     context.data.$tool = {};
     context.data.$tool.main = recursiveReplace(tool.main);
 
+    // puts extraValues into context.data
+    let extraValues = {};
+    if (datax[0].extra_values != null) {
+        for (let i = 0; i < datax[0].extra_values.length; i++) {
+            let key = recursiveReplace(datax[0].extra_values[i].key);
+            let value = recursiveReplace(datax[0].extra_values[i].value);
+            extraValues[key] = value;
+        }
+    }
+    context.data.extraValues = extraValues;
 
     let apiData = {
         "request": null,
@@ -129,12 +129,6 @@ async function useTool(req, context) {
             header.forEach(h => {
                 headers[h.header_title] = h.header_content;
             });
-        }
-
-
-        // checks if extra values were passed, if so, uses them as headers
-        if (Object.keys(extraValues).length != 0) {
-            headers = extraValues;
         }
 
 
