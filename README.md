@@ -1,25 +1,78 @@
-<h1>API Calls (apis) layout</h1>
+# Directus API Tools Endpoint
+This is a custom API endpoint for directus which allows for generic API calls to be prepared and used by more specialised 'tools' which are used to define more specific funcions using the generic API calls 
+
+# Data Structure
+
+**NOTES**
+* API endpoint is accesable at /tools/(tool name)
+* If the variable within {} is not found, it will be returned unaltered
+* When acsessing an array within {}, acsess location using dot notation rather than square brackets (USE Array.0.value NOT Array[0].value) 
+
+### API Response
+
+* Entire Response: {apiResponse}
+
+### URL
+
+* Entire URL: {$url}
+* JSON of URL querys: {$url.query}
+* Specific query: {$url.QueryName}
+
+### Tool
+
+* Main Field of Tool: {$tool.main}
+
+### Extra Values
+NOTE Variables CAN be added to the extra values and will be converted before use
+
+* All Extra Values: {extraValues}
+* Specific Value: {extraValues.ValueName}
+
+### Accountability
+
+* All Accountability Fields: {reqAccountability}
+* User: {reqAccountability.user}
+* User Role: {reqAccountability.role}
+* Admin (T/F): {reqAccountability.admin}
+* User IP: {reqAccountability.ip}
+* User Permissions (Array): _reqAccountability.permissions}
+
+# API Calls (Generics) layout
 
 ![image](https://github.com/user-attachments/assets/03db4e5f-c8ed-4970-a04b-7bd27ffa641c)
 
-![image](https://github.com/user-attachments/assets/b80e5d40-4430-4403-931c-cf1fe3a58e77)
+![image](https://github.com/user-attachments/assets/3326ae5a-dda4-439c-a856-7fa5f43c6922)
+Example Request and Transform for openAI API
 
-![image](https://github.com/user-attachments/assets/46fa1150-108b-4e55-80f0-f4e80ba20992)
+### Fields
 
-header title and content are both strings
+* Title: Identifier for the API (Input - String)
+* Description: Description field for the API (TextArea - Text)
+* Method: API Request Method (GET and POST are tested and known to work) (Dropdown)
+* URL: API URL (Input - String)
+* Header: Defines the header(s) to be sent with the request (Repeater - JSON - key (string) - value (string))
+* Request: Request field of the API call (code - JSON)
+* Transform: Defines the structure of the returned data, returns entire raw response if left blank (code - JSON)
 
-<h1>API Parents (tools)</h1>
+# API Parents (tools)
 
 ![image](https://github.com/user-attachments/assets/4f0473eb-5111-47c3-874e-c05f37c6c0b2)
 
-![image](https://github.com/user-attachments/assets/aac75627-3097-4ff5-b3e0-a2f08b46c8ab)
+### Fields
 
-Relationship (Many to One)
+* Title: Identifier for the Tool (name used in URL) (Input - String)
+* API: Relation to define which API the tool uses (Relation - Many To One)
+  * ![image](https://github.com/user-attachments/assets/cb855c46-006b-491b-bcd3-c9ffa425b90f)
+* Description: Description field for the Tool (TextArea - Text)
+* Main: Where the main query is written (TextArea - Text)
+* ExtraValues: Extra values which can be used anywhere in the Tool or Generic (Repeater - JSON - key (string) - value (string))
 
-![image](https://github.com/user-attachments/assets/99c9c682-3b56-4cc1-a0cc-db99aac22060)
+# Example Usage
+## API Calls (Generic)
+![image](https://github.com/user-attachments/assets/1ac578da-3b5d-4ba8-acdd-254a51ba3fcb)
+![image](https://github.com/user-attachments/assets/81c0ed12-1ba1-41bc-9313-79dccd926635)
 
-Relation Interface
+## API Parents (Tools)
+![image](https://github.com/user-attachments/assets/8aaaecb4-ec5f-4947-93e0-250d53f6b0cb)
+![image](https://github.com/user-attachments/assets/d2cbc42e-ff27-409b-bf00-08370eb9198e)
 
-![image](https://github.com/user-attachments/assets/3671b8cb-a177-4362-a094-141b49551dd0)
-
-Key and Value are both strings. Used as headers if present and replaces default headers
