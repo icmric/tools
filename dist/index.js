@@ -127,7 +127,7 @@ async function useTool(req, context) {
         if (header != null) {
             // Build headers object from the header array
             header.forEach(h => {
-                headers[h.header_title] = h.header_content;
+                headers[h.key] = h.value;
             });
         }
 
