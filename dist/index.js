@@ -152,16 +152,15 @@ let contextExport;
 
 var index = (router, context) => {
 	router.get('/*', async (req, res) => {
-		// dodgy way of checking auth, should compare against list of users
-		// to use perm level rather than user, use .admin instead of .user 
-		if (req.accountability.user != null) {
+		// Will fail if the user does not have read acsess to both tools and parent collection
+		try { 
 			reqExport = req;
 			contextExport = context;
 			let finalApiResponse = await useTool(reqExport, contextExport);
 			res.send(finalApiResponse);
-		} else {
+		} catch (e) {
 			// Can also be sent as plain string
-			res.send({'Request failed': 'Unauthorized, Please log in!'});
+			res.send('Request failed, Please log in or check your permissions!');
 		}
 	});
 };
