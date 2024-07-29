@@ -121,8 +121,10 @@ async function useTool(req, context) {
 
     async function performApiCall(apiCallDetails, apiCallBody) {
         // get the necessary details from apiCallDetails
-        const { method, url, header } = apiCallDetails;
+        let { method, url, header } = apiCallDetails;
         let headers = {};
+
+        url = replaceInValue(url);
 
         if (header != null) {
             // Build headers object from the header array
@@ -137,11 +139,13 @@ async function useTool(req, context) {
             method: apiCallDetails.method,
             headers: headers != null ? headers : null
         };
+
         if (apiCallBody != null) {
             apiRequestInfo.body = JSON.stringify(apiCallBody);
         }
+
         // Execute the fetch request with the provided details and capture the response
-        apiResponse = await fetch(apiCallDetails.url, apiRequestInfo).then(response => { return response.json() });
+        apiResponse = await fetch(url, apiRequestInfo).then(response => { return response.json() });
         apiData.response = apiResponse;
         return apiResponse;
     }
@@ -153,14 +157,14 @@ let contextExport;
 var index = (router, context) => {
 	router.get('/*', async (req, res) => {
 		// Will fail if the user does not have read acsess to both tools and parent collection
-		try { 
+		try {
 			reqExport = req;
 			contextExport = context;
 			let finalApiResponse = await useTool(reqExport, contextExport);
 			res.send(finalApiResponse);
 		} catch (e) {
 			// Can also be sent as plain string
-			res.send('Request failed, Please log in or check your permissions!');
+			res.send('Request failed, Please log in or check your permissions! ' + e);
 		}
 	});
 };
