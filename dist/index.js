@@ -1,7 +1,15 @@
 async function useTool(req, context) {
-    const urlRequestsBreakdown = req.url.split(/\/|\?/);
-    let requestedTool = urlRequestsBreakdown[1];
-    let requestedToolQuery = req.query;
+    let urlRequestsBreakdown;
+    let requestedToolQuery;
+    let requestedTool;
+    if (req.body.tool == null) {
+        urlRequestsBreakdown = req.url.split(/\/|\?/);
+        requestedTool = urlRequestsBreakdown[1];
+        requestedToolQuery = removeUrlPrefix(req.query);
+    } else {
+        requestedTool = req.body.tool;
+        requestedToolQuery = removeUrlPrefix(req.body.body);
+    }
 
     const { services, getSchema } = context;
     const { ItemsService } = services;
@@ -62,6 +70,27 @@ async function useTool(req, context) {
     }
 
     return apiResponceObj;
+
+    function removeUrlPrefix(obj) {
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                let newKey = key.replace('$url.', '');
+                let value = obj[key];
+
+                if (typeof value === 'string') {
+                    value = value.replace('$url.', '');
+                } else if (typeof value === 'object' && value !== null) {
+                    value = removeUrlPrefix(value);
+                }
+
+                if (newKey !== key) {
+                    delete obj[key];
+                }
+                obj[newKey] = value;
+            }
+        }
+        return obj;
+    }
 
     // Attempts to find a value at the given path. If no value is found, returns the path.
     function resolvePath(replacementVariablePath) {
@@ -157,6 +186,19 @@ let contextExport;
 var index = (router, context) => {
 	router.get('/*', async (req, res) => {
 		// Will fail if the user does not have read acsess to both tools and parent collection
+		try {
+			reqExport = req;
+			contextExport = context;
+			let finalApiResponse = await useTool(reqExport, contextExport);
+			res.send(finalApiResponse);
+		} catch (e) {
+			// Can also be sent as plain string
+			res.send('Request failed, Please log in or check your permissions! ' + e);
+		}
+	});
+	
+	router.post('/*', async (req, res) => {
+		// Will fail if the user does not have write acsess to both tools and parent collection
 		try {
 			reqExport = req;
 			contextExport = context;
