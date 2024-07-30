@@ -1,4 +1,5 @@
 async function useTool(req, context) {
+
     let urlRequestsBreakdown;
     let requestedToolQuery;
     let requestedTool;
@@ -19,7 +20,6 @@ async function useTool(req, context) {
         schema: await getSchema(),
         accountability: req.accountability
     });
-
 
     let datax;
     try {
@@ -53,6 +53,7 @@ async function useTool(req, context) {
     let apiData = {
         "request": null,
     };
+
     if ((apiRequest.request == null || apiRequest.request == {}) == false) {
         apiData.request = recursiveReplace(apiRequest.request);
     }
@@ -161,7 +162,6 @@ async function useTool(req, context) {
                 headers[h.key] = h.value;
             });
         }
-
 
         let apiResponse;
         let apiRequestInfo = {
