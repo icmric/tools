@@ -15,22 +15,22 @@ async function useTool(req, context) {
     const { services, getSchema } = context;
     const { ItemsService } = services;
 
-    // change 'api_parents' to name of collection of tools
-    const itemx = new ItemsService('api_parents', {
+    // change 'resources' to name of collection of tools
+    const itemx = new ItemsService('resources', {
         schema: await getSchema(),
         accountability: req.accountability
     });
 
     let datax;
     try {
-        datax = await itemx.readByQuery({ fields: ['*', 'api.*'], filter: { 'title': { '_eq': requestedTool } } });
+        datax = await itemx.readByQuery({ fields: ['*', 'retrieves.*'], filter: { 'title': { '_eq': requestedTool } } });
     } catch (e) { }
 
     if (datax == "") {
         return itemx.readByQuery({ fields: ['title'] });
     }
 
-    let apiRequest = datax[0].api;
+    let apiRequest = datax[0].retrieves;
     let tool = datax[0];
 
     context.data = {};
@@ -198,11 +198,10 @@ var index = (router, context) => {
 			let finalApiResponse = await useTool(reqExport, contextExport);
 			res.send(finalApiResponse);
 		} catch (e) {
-			// Can also be sent as plain string
-			res.send('Request failed, Please log in or check your permissions! ' + e);
+			res.send('Request failed! ' + e);
 		}
 	});
-	
+
 	router.post('/*', async (req, res) => {
 		// Will fail if the user does not have write acsess to both tools and parent collection
 		try {
@@ -211,8 +210,7 @@ var index = (router, context) => {
 			let finalApiResponse = await useTool(reqExport, contextExport);
 			res.send(finalApiResponse);
 		} catch (e) {
-			// Can also be sent as plain string
-			res.send('Request failed, Please log in or check your permissions! ' + e);
+			res.send('Request failed! ' + e);
 		}
 	});
 };
