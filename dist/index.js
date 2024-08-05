@@ -1,8 +1,9 @@
 async function useTool(req, context) {
-
     let urlRequestsBreakdown;
     let requestedToolQuery;
     let requestedTool;
+    let bypassTransform = false;
+
     if (req.body.tool == null) {
         urlRequestsBreakdown = req.url.split(/\/|\?/);
         requestedTool = urlRequestsBreakdown[1];
@@ -10,6 +11,10 @@ async function useTool(req, context) {
     } else {
         requestedTool = req.body.tool;
         requestedToolQuery = removeUrlPrefix(req.body.body);
+    }
+
+    if (req.body.bypassTransform == true) {
+        bypassTransform = true;
     }
 
     const { services, getSchema } = context;
@@ -62,7 +67,7 @@ async function useTool(req, context) {
     context.data.apiResponse = await performApiCall(apiRequest, apiData.request);
 
     let apiResponceObj;
-    if (apiRequest.transform != null) {
+    if (apiRequest.transform != null && bypassTransform == false) {
         // Uses passes transform object to gather all data to return
         apiResponceObj = await recursiveReplace(apiRequest.transform);
     } else {
