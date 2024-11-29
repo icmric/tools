@@ -3,6 +3,7 @@ async function useTool(req, context) {
     let requestedToolQuery;
     let requestedTool;
     let bypassTransform = false;
+    let prevApiRsps = req.body.prevApiRsp || [];
 
     if (req.body.tool == null) {
         urlRequestsBreakdown = req.url.split(/\/|\?/);
@@ -43,6 +44,7 @@ async function useTool(req, context) {
     context.data.$request = requestedToolQuery;
     context.data.$tool = {};
     context.data.$tool.main = recursiveReplace(tool.main);
+    context.data.prevApiRsps = prevApiRsps;
 
     // puts extraValues into context.data
     let extraValues = {};
@@ -65,6 +67,7 @@ async function useTool(req, context) {
 
     // Makes API call and saves raw response
     context.data.apiResponse = await performApiCall(apiRequest, apiData.request);
+    //context.data.prevApiRsps.push(context.data.apiResponse);
 
     let apiResponceObj;
     if (apiRequest.transform != null && bypassTransform == false) {
@@ -73,6 +76,7 @@ async function useTool(req, context) {
     } else {
         // If no transform object is provided, the raw api response is returned
         apiResponceObj = context.data.apiResponse;
+        //apiResponceObj += context.data.prevApiRsps;
     }
 
     return apiResponceObj;
@@ -102,7 +106,7 @@ async function useTool(req, context) {
     function resolvePath(replacementVariablePath) {
         let parts = replacementVariablePath.split(' ');
         let path = parts[0];
-        let defaultValue = parts.slice(1).join(' ') || "Blank";
+        let defaultValue = parts.slice(1).join(' ') || undefined;
 
         path = "data." + path;
         const result = path.trim().split('.').reduce((prev, curr) => {
