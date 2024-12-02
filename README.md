@@ -1,6 +1,8 @@
 # Directus API Tools Endpoint
 This is a custom API endpoint for directus which allows for generic API calls to be prepared and used by more specialised 'tools' which are used to define more specific funcions using the generic API calls 
 
+# THIS PACKAGE IS NO LONGER SUPORTED, SEE CURRENTLY SUPORTED VERSION [HERE}(https://github.com/icmric/api-automations/tree/main)
+
 # Data Structure
 
 **NOTES**
